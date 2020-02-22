@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/SingularReza/Grandham v0.0.0-20200130043753-b1c71f6ebafa // indirect
+	github.com/google/go-cmp v0.4.0
 	github.com/gorilla/mux v1.7.4
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	golang.org/x/lint v0.0.0-20200130185559-910be7a94367 // indirect

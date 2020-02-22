@@ -65,6 +65,7 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	/*
 	if library.Type == "MOVIES" {
 		for _, movie := range items {
 			movieMetaData := metadata.GetMovieData(movie.Name)
@@ -75,9 +76,12 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 			animeData := metadata.GetAnimeData(anime.Name)
 			db.CreateAnimeEntry(animeData, anime.ID)
 		}
-	}
+	}*/
 
-	fmt.Println(items)
+	for _, item := range items {
+		fmt.Printf("{Name:\"%s\",Id:\"%s\"},", item.Name, item.FolderID)
+	}
+	//fmt.Println(items)
 	fmt.Println(libraryID)
 
 	sendResponse(w, library)
