@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	db 		"github.com/SingularReza/grandham-rewrite/db"
+	scan 	"github.com/SingularReza/grandham-rewrite/gdrive"
 )
 
 // LibraryRequest - generic request structure for any request related to library
@@ -12,6 +15,12 @@ type LibraryRequest struct {
 	FolderIDs [] string		`json:"folderids,omitempty"`
 	Type string				`json:"type,omitempty"`
 	Range [] int			`json:"range,omitempty"`
+}
+
+// Item - generic structure for Items in a folder, conatins driveid and name
+type Item struct {
+	Name string
+	FolderID string
 }
 
 func checkErr(w http.ResponseWriter, err error) {
@@ -44,6 +53,32 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+
+	libraryID := db.CreateLibrary(library.Name, library.Type)
+
+	var items []Item
+
+	for _, folderID := range library.FolderIDs {
+		folderItems := scan.GetItemsList(folderID)
+		for _, item := range folderItems {
+			items = append(items, Item{item.Name, item.Id});
+		}
+	}
+
+	if library.Type == "MOVIES" {
+		for _, movie := range items {
+			movieMetaData := metadata.GetMovieData(movie.Name)
+			db.CreateMovieEntry(movieMetaData, movie.ID)
+		}
+	} else if library.Type == "ANIME" {
+		for _, anime := range items {
+			animeData := metadata.GetAnimeData(anime.Name)
+			db.CreateAnimeEntry(animeData, anime.ID)
+		}
+	}
+
+	fmt.Println(items)
+	fmt.Println(libraryID)
 
 	sendResponse(w, library)
 }
