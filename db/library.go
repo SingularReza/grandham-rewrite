@@ -37,3 +37,19 @@ func CreateLibrary(libraryName string, libraryType string) int64 {
 
 	return libraryID
 }
+
+// AddFolder - adds folder to folder table with the corresponding library id
+func AddFolder(folderString string, libraryID int64) int64 {
+	statement, err := database.Prepare("INSERT INTO FOLDERS (folder_string, library_id) VALUES (?, ?)")
+	checkErr(err)
+
+	result, err := statement.Exec(folderString, libraryID)
+	checkErr(err)
+
+	folderID, err := result.LastInsertId()
+	checkErr(err)
+
+	fmt.Println(folderID)
+
+	return folderID
+}

@@ -7,6 +7,7 @@ import (
 	drive "google.golang.org/api/drive/v3"
 )
 
+// Note: keep a copy of credentials.json and token.json before running the test
 func TestGetItemsList(t *testing.T) {
 	// change this later to a stable folder
 	folderID := "1xx-dgZHjhtcYVc_ooeW5b9GN5pQGiMY5"
@@ -52,9 +53,10 @@ func TestGetItemsList(t *testing.T) {
 								{Name:"A Tale of Two Sisters",Id:"1lYGqCu7JRnQdOykpIy-PU5XFq3htzy-Q"},
 								{Name:"A Quiet Place",Id:"1S2RmmTNTNy-8mxreupXz_6eU1319RyRR"},
 								{Name:"A Brighter Summer Day",Id:"1igqp1Bdxb5KGXTN-ROHmMZHwnMO00XbM"},
-								{Name:"A Boy and His Atom - The World's Smallest Movie",Id:"1wOUFwpEulVrHGIcAeCk2YmPKM92B8iol"}}
+								{Name:"A Boy and His Atom - The World's Smallest Movie",Id:"1wOUFwpEulVrHGIcAeCk2YmPKM92B8iol"},
+							}
 
 	if !cmp.Equal(itemList, expected)  {
-		t.Errorf("handler returned unexpected response")
+		t.Errorf("GetItemsList in scan package returned unexpected response")
 	}
 }

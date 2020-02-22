@@ -12,7 +12,7 @@ func GetItemsList(folderid string) []*drive.File {
 	srv := getService()
     r, err := srv.Files.List().
 				Q("'"+ folderid +"' in parents").
-				PageSize(1000).
+				PageSize(1).
                 IncludeItemsFromAllDrives(true).
                 SupportsAllDrives(true).
                 Fields("files(id, name)").Do()

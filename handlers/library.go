@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	db 		"github.com/SingularReza/grandham-rewrite/db"
-	scan 	"github.com/SingularReza/grandham-rewrite/gdrive"
+	db 			"github.com/SingularReza/grandham-rewrite/db"
+	metadata	"github.com/SingularReza/grandham-rewrite/metadata"
+	scan 		"github.com/SingularReza/grandham-rewrite/gdrive"
 )
 
 // LibraryRequest - generic request structure for any request related to library
@@ -56,33 +57,34 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 
 	libraryID := db.CreateLibrary(library.Name, library.Type)
 
-	var items []Item
+	items := []Item{}
 
 	for _, folderID := range library.FolderIDs {
-		folderItems := scan.GetItemsList(folderID)
-		for _, item := range folderItems {
-			items = append(items, Item{item.Name, item.Id});
-		}
+		items = AddFolder(folderID, libraryID, items)
 	}
 
-	/*
-	if library.Type == "MOVIES" {
-		for _, movie := range items {
-			movieMetaData := metadata.GetMovieData(movie.Name)
-			db.CreateMovieEntry(movieMetaData, movie.ID)
-		}
-	} else if library.Type == "ANIME" {
+	if library.Type == "ANIME" {
+		fmt.Println(items)
 		for _, anime := range items {
+			fmt.Print(anime.Name)
 			animeData := metadata.GetAnimeData(anime.Name)
-			db.CreateAnimeEntry(animeData, anime.ID)
+			fmt.Print(animeData)
 		}
-	}*/
-
-	for _, item := range items {
-		fmt.Printf("{Name:\"%s\",Id:\"%s\"},", item.Name, item.FolderID)
 	}
-	//fmt.Println(items)
-	fmt.Println(libraryID)
 
 	sendResponse(w, library)
+}
+
+// AddFolder - Adds a folder to a library
+func AddFolder(folderID string, libraryID int64, itemList []Item) []Item {
+	folderItems := scan.GetItemsList(folderID)
+	for _, item := range folderItems {
+		itemList = append(itemList, Item{item.Name, item.Id});
+		fmt.Print(item)
+	}
+
+	db.AddFolder(folderID, libraryID)
+
+	//fmt.Print(itemList)
+	return itemList
 }
