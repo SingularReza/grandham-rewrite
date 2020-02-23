@@ -45,6 +45,12 @@ func sendResponse(w http.ResponseWriter, data interface{}) {
 	}
 }
 
+func recordAnimeData(anime Item) {
+	animeData := metadata.GetAnimeData(anime.Name)
+	animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID)
+	fmt.Printf("%+v, %d\n", animeData, animeEntryID)
+}
+
 // CreateLibrary - Creates Library entry after scanning the relevant folder
 func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 	library := LibraryRequest{}
@@ -63,13 +69,9 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if library.Type == "ANIME" {
-		fmt.Println(items)
+		//fmt.Println(items)
 		for _, anime := range items {
-			//wrap this part in a function so they can be done concurrently
-			fmt.Print(anime.Name)
-			animeData := metadata.GetAnimeData(anime.Name)
-			animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID)
-			fmt.Printf("%+v, %d\n", animeData, animeEntryID)
+			go recordAnimeData(anime)
 		}
 	}
 
@@ -81,7 +83,7 @@ func AddFolder(folderID string, libraryID int64, itemList []Item) []Item {
 	folderItems := scan.GetItemsList(folderID)
 	for _, item := range folderItems {
 		itemList = append(itemList, Item{item.Name, item.Id})
-		fmt.Print(item)
+		//fmt.Print(item)
 	}
 
 	db.AddFolder(folderID, libraryID)

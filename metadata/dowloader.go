@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 func downloadImage(imageURL string) {
@@ -14,15 +15,21 @@ func downloadImage(imageURL string) {
 		return
 	}
 
-	fmt.Println(imageURL)
-	resp, err := http.Get(imageURL)
+	client := http.Client{
+		Timeout: 20 * time.Second,
+	}
+
+	resp, err := client.Get(imageURL)
 	checkErr(err)
+
+	fileName := filepath.Base(imageURL)
 
 	defer resp.Body.Close()
 
-	file, err := os.Create("images/" + filepath.Base(imageURL))
+	file, err := os.Create(filepath.Join("images", fileName))
 	if os.IsNotExist(err) {
-		os.Mkdir("images", os.ModeDir)
+		os.Mkdir("images", 0700)
+		file, err = os.Create(filepath.Join("images", fileName))
 	}
 
 	size, err := io.Copy(file, resp.Body)
@@ -30,5 +37,5 @@ func downloadImage(imageURL string) {
 
 	defer file.Close()
 
-	fmt.Printf("downloaded file %s of size %d\n", imageURL, size)
+	fmt.Printf("downloaded image %s of size %d\n", fileName, size)
 }

@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	metadata "github.com/SingularReza/grandham-rewrite/metadata"
@@ -22,7 +23,7 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64
 	genres = strings.TrimLeft(genres, ",")
 
 	result, err := statement.Exec(animeData.ID, animeData.Title.Romaji, animeData.Title.English,
-		animeData.CoverImage.Large, animeData.BannerImage, animeData.Format,
+		filepath.Base(animeData.CoverImage.Large), filepath.Base(animeData.BannerImage), animeData.Format,
 		animeData.Episodes, animeData.EpisodeDuration, genres)
 	checkErr(err)
 

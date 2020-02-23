@@ -3,7 +3,6 @@ package metadata
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -137,7 +136,7 @@ func GetAnimeData(animeName string) AnimeMedia {
 
 	respBody := AnimeInfo{}
 	json.NewDecoder(resp.Body).Decode(&respBody)
-	fmt.Printf("%+v\n", respBody)
+	//fmt.Printf("%+v\n", respBody)
 
 	go downloadImage(respBody.Data.Media.CoverImage.Large)
 	return respBody.Data.Media
