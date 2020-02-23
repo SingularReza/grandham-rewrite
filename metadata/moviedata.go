@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	//scan "github.com/SingularReza/grandham-rewrite/gdrive"
 )
 
 // MovieSearchResults - gives an array of search results
@@ -49,7 +50,9 @@ func GetMovieData(moviename string) MovieData {
 	movieInfo := MovieData{}
 	movieInfo = response.Results[0]
 
-	// download poster and backdrop
+	// use scan to get runtime and filesize later
+	go downloadImage(movieInfo.PosterPath)
+	go downloadImage(movieInfo.BackdropPath)
 
 	return movieInfo
 }
