@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 
-	_"github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // Library - generic structure for Library entry
 type Library struct {
-	ID int
+	ID   int
 	Name string
 	Type string
 }
