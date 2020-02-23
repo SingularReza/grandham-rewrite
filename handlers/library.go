@@ -65,6 +65,7 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 	if library.Type == "ANIME" {
 		fmt.Println(items)
 		for _, anime := range items {
+			//wrap this part in a function so they can be done concurrently
 			fmt.Print(anime.Name)
 			animeData := metadata.GetAnimeData(anime.Name)
 			animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID)

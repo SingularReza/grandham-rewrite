@@ -21,7 +21,9 @@ func downloadImage(imageURL string) {
 	defer resp.Body.Close()
 
 	file, err := os.Create("images/" + filepath.Base(imageURL))
-	checkErr(err)
+	if os.IsNotExist(err) {
+		os.Mkdir("images", os.ModeDir)
+	}
 
 	size, err := io.Copy(file, resp.Body)
 	checkErr(err)
