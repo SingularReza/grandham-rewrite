@@ -139,5 +139,6 @@ func GetAnimeData(animeName string) AnimeMedia {
 	json.NewDecoder(resp.Body).Decode(&respBody)
 	fmt.Printf("%+v\n", respBody)
 
+	downloadImage(respBody.Data.Media.CoverImage.Large)
 	return respBody.Data.Media
 }

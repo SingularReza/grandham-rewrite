@@ -67,7 +67,8 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 		for _, anime := range items {
 			fmt.Print(anime.Name)
 			animeData := metadata.GetAnimeData(anime.Name)
-			fmt.Printf("%+v\n", animeData)
+			animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID)
+			fmt.Printf("%+v, %d\n", animeData, animeEntryID)
 		}
 	}
 
