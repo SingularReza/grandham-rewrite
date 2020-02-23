@@ -5,22 +5,22 @@ import (
 	"fmt"
 	"net/http"
 
-	db 			"github.com/SingularReza/grandham-rewrite/db"
-	metadata	"github.com/SingularReza/grandham-rewrite/metadata"
-	scan 		"github.com/SingularReza/grandham-rewrite/gdrive"
+	db "github.com/SingularReza/grandham-rewrite/db"
+	scan "github.com/SingularReza/grandham-rewrite/gdrive"
+	metadata "github.com/SingularReza/grandham-rewrite/metadata"
 )
 
 // LibraryRequest - generic request structure for any request related to library
 type LibraryRequest struct {
-	Name string				`json:"name,omitempty"`
-	FolderIDs [] string		`json:"folderids,omitempty"`
-	Type string				`json:"type,omitempty"`
-	Range [] int			`json:"range,omitempty"`
+	Name      string   `json:"name,omitempty"`
+	FolderIDs []string `json:"folderids,omitempty"`
+	Type      string   `json:"type,omitempty"`
+	Range     []int    `json:"range,omitempty"`
 }
 
 // Item - generic structure for Items in a folder, conatins driveid and name
 type Item struct {
-	Name string
+	Name     string
 	FolderID string
 }
 
@@ -31,7 +31,7 @@ func checkErr(w http.ResponseWriter, err error) {
 	}
 }
 func sendResponse(w http.ResponseWriter, data interface{}) {
-	data, ok := data.(LibraryRequest);
+	data, ok := data.(LibraryRequest)
 
 	if ok {
 		response, err := json.Marshal(data)
@@ -44,7 +44,6 @@ func sendResponse(w http.ResponseWriter, data interface{}) {
 		fmt.Println("data is null")
 	}
 }
-
 
 // CreateLibrary - Creates Library entry after scanning the relevant folder
 func CreateLibrary(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +67,7 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 		for _, anime := range items {
 			fmt.Print(anime.Name)
 			animeData := metadata.GetAnimeData(anime.Name)
-			fmt.Print(animeData)
+			fmt.Printf("%+v\n", animeData)
 		}
 	}
 
@@ -79,7 +78,7 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 func AddFolder(folderID string, libraryID int64, itemList []Item) []Item {
 	folderItems := scan.GetItemsList(folderID)
 	for _, item := range folderItems {
-		itemList = append(itemList, Item{item.Name, item.Id});
+		itemList = append(itemList, Item{item.Name, item.Id})
 		fmt.Print(item)
 	}
 

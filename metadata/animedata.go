@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"bytes"
+	"time"
 )
 
 type animeRequest struct {
@@ -80,10 +81,11 @@ func checkErr(err error) {
 }
 
 // GetAnimeData - gets metadata from anilist
-func GetAnimeData(animename string) AnimeInfo {
+func GetAnimeData(animeName string) AnimeMedia  {
 	// todo: expand query to get more data
 	query := `query($search: String, $type: MediaType){
                 Media(search: $search, type: $type){
+                	id
                     title {
 						romaji
 						english
@@ -91,8 +93,17 @@ func GetAnimeData(animename string) AnimeInfo {
                     coverImage {
                         large
 					}
-					startDate
-					endDate
+					bannerImage
+					startDate {
+					  year
+					  month
+					  day
+					}
+					endDate {
+					  year
+					  month
+					  day
+					}
 					description
 					season
 					seasonYear
@@ -104,7 +115,7 @@ func GetAnimeData(animename string) AnimeInfo {
             }`
 
     params := animeParams{
-    	Search: animename,
+    	Search: animeName,
   		Type: "ANIME",
     }
 
@@ -115,19 +126,18 @@ func GetAnimeData(animename string) AnimeInfo {
 
 	req, _ := json.Marshal(reqBody)
 
-	resp, err := http.Post("https://graphql.anilist.co/", "application/json", bytes.NewBuffer(req))
+	client := http.Client{
+	    Timeout: 20 * time.Second,
+	}
+
+	resp, err := client.Post("https://graphql.anilist.co/", "application/json", bytes.NewBuffer(req))
 	checkErr(err)
 
 	defer resp.Body.Close()
 
-	fmt.Print(resp.Body)
+	respBody := AnimeInfo{}
+	json.NewDecoder(resp.Body).Decode(&respBody)
+	fmt.Printf("%+v\n", respBody)
 
-	b := AnimeInfo{}
-	json.NewDecoder(resp.Body).Decode(&b)
-
-	//return b.Data.Media
-
-	//animeObject := Anime{} //convert b.Data.Media to anime object
-	// download poster and backdrop
-	return b
+	return respBody.Data.Media
 }
