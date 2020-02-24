@@ -51,8 +51,8 @@ func GetMovieData(moviename string) MovieData {
 	movieInfo = response.Results[0]
 
 	// use scan to get runtime and filesize later
-	go downloadImage(movieInfo.PosterPath)
-	go downloadImage(movieInfo.BackdropPath)
+	go downloadImage("https://image.tmdb.org/t/p/w1280" + movieInfo.PosterPath)
+	go downloadImage("https://image.tmdb.org/t/p/w1280" + movieInfo.BackdropPath)
 
 	return movieInfo
 }

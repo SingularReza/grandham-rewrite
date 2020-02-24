@@ -30,18 +30,21 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64
 	animeID, err := result.LastInsertId()
 	checkErr(err)
 
-	fmt.Println(animeID)
+	infoID := addAnimeExtraInfo(animeData.Description, animeData.StartDate, animeData.EndDate, animeID)
+
+	fmt.Printf("animeid: %d, animeinfoid: %d", animeID, infoID)
 
 	return animeID
 }
 
-func addAnimeExtraInfo(description string, startDate metadata.AnimeDate, endDate metadata.AnimeDate, animeID string) int64 {
+func addAnimeExtraInfo(description string, startDate metadata.AnimeDate, endDate metadata.AnimeDate, animeID int64) int64 {
 	statement, err := database.Prepare(`INSERT INTO ANIMEINFO (anime_desc, anime_startyear, anime_startmonth,
 										anime_startday, anime_endyear, anime_endmonth, anime_endday, anime_id)
 										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
 	checkErr(err)
 
-	result, err := statement.Exec(description, startDate, endDate, animeID)
+	result, err := statement.Exec(description, startDate.Year, startDate.Month, startDate.Day,
+		endDate.Year, endDate.Month, endDate.Day, animeID)
 	checkErr(err)
 
 	infoID, err := result.LastInsertId()

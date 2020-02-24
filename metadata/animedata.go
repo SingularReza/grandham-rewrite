@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
+	//scan "github.com/SingularReza/grandham-rewrite/gdrive"
 )
 
 type animeRequest struct {
@@ -137,6 +138,7 @@ func GetAnimeData(animeName string) AnimeMedia {
 	respBody := AnimeInfo{}
 	json.NewDecoder(resp.Body).Decode(&respBody)
 
+	// use scan to get runtime and filesize later
 	go downloadImage(respBody.Data.Media.CoverImage.Large)
 	go downloadImage(respBody.Data.Media.BannerImage)
 
