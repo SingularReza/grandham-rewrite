@@ -8,10 +8,10 @@ import (
 )
 
 // GetItemsList - reads movie library and parses the data correctly
-func GetItemsList(folderid string) []*drive.File {
+func GetItemsList(folderID string) []*drive.File {
 	srv := getService()
 	r, err := srv.Files.List().
-		Q("'" + folderid + "' in parents").
+		Q("'" + folderID + "' in parents").
 		PageSize(10).
 		IncludeItemsFromAllDrives(true).
 		SupportsAllDrives(true).
