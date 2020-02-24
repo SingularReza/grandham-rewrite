@@ -25,6 +25,7 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64
 	result, err := statement.Exec(animeData.ID, animeData.Title.Romaji, animeData.Title.English,
 		filepath.Base(animeData.CoverImage.Large), filepath.Base(animeData.BannerImage), animeData.Format,
 		animeData.Episodes, animeData.EpisodeDuration, genres)
+	fmt.Print(animeData.ID)
 	checkErr(err)
 
 	animeID, err := result.LastInsertId()
@@ -32,7 +33,7 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64
 
 	infoID := addAnimeExtraInfo(animeData.Description, animeData.StartDate, animeData.EndDate, animeID)
 
-	fmt.Printf("animeid: %d, animeinfoid: %d", animeID, infoID)
+	fmt.Printf("animeid: %d, animeinfoid: %d\n", animeID, infoID)
 
 	return animeID
 }

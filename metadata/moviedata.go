@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"time"
 	//scan "github.com/SingularReza/grandham-rewrite/gdrive"
 )
 
@@ -26,7 +27,11 @@ type MovieData struct {
 }
 
 func getData(url string, target interface{}) error {
-	r, err := http.Get(url)
+	client := http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	r, err := client.Get(url)
 	checkErr(err)
 
 	defer r.Body.Close()
@@ -48,6 +53,8 @@ func GetMovieData(moviename string) MovieData {
 	getData(baseURL.String(), response)
 
 	movieInfo := MovieData{}
+	//fmt.Printf("", moviename)
+	//fmt.Printf("moviename: %s, data: %+v\n", moviename, response)
 	movieInfo = response.Results[0]
 
 	// use scan to get runtime and filesize later

@@ -3,6 +3,7 @@ package metadata
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 	//scan "github.com/SingularReza/grandham-rewrite/gdrive"
@@ -83,6 +84,7 @@ func checkErr(err error) {
 // GetAnimeData - gets metadata from anilist
 func GetAnimeData(animeName string) AnimeMedia {
 	// todo: expand query to get more data
+	fmt.Printf("animename: %s\n", animeName)
 	query := `query($search: String, $type: MediaType){
                 Media(search: $search, type: $type){
                 	id

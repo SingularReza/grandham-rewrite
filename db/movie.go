@@ -12,7 +12,7 @@ import (
 func CreateMovieEntry(movieData metadata.MovieData, folderID string) int64 {
 	statement, err := database.Prepare(`INSERT INTO MOVIES (movie_id, movie_title, movie_original_title,
 										movie_language, release_date, movie_genres, movie_backdrop,
-										movie_poster) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+										movie_poster) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
 	checkErr(err)
 
 	var genres, genreName string
@@ -21,13 +21,13 @@ func CreateMovieEntry(movieData metadata.MovieData, folderID string) int64 {
 		newStatement, err := database.Prepare(query)
 		checkErr(err)
 
-		err = newStatement.QueryRow(query, genreid).Scan(&genreName)
+		err = newStatement.QueryRow(genreid).Scan(&genreName)
 		checkErr(err)
 
 		genres += genreName + ","
 	}
 	genres = strings.TrimLeft(genres, ",")
-
+	//fmt.Printf("movieid: %d\n", movieData.ID)
 	result, err := statement.Exec(movieData.ID, movieData.Title, movieData.OriginalTitle,
 		movieData.OriginalLanguage, movieData.ReleaseDate, genres,
 		movieData.BackdropPath, movieData.PosterPath)
@@ -44,7 +44,7 @@ func CreateMovieEntry(movieData metadata.MovieData, folderID string) int64 {
 }
 
 func addMovieExtraInfo(description string, movieID int64) int64 {
-	statement, err := database.Prepare(`INSERT INTO MOVIEINFO (movie_id, movie_overview) VALUES (?, ?)`)
+	statement, err := database.Prepare(`INSERT INTO MOVIEINFO (movie_overview, movie_id) VALUES (?, ?)`)
 	checkErr(err)
 
 	result, err := statement.Exec(description, movieID)

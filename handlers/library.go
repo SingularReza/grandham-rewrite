@@ -48,6 +48,7 @@ func sendResponse(w http.ResponseWriter, data interface{}) {
 
 func recordAnimeData(anime Item) {
 	animeData := metadata.GetAnimeData(anime.Name)
+	fmt.Printf("%+v\n", animeData)
 	animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID)
 	fmt.Printf("%+v, %d\n", animeData, animeEntryID)
 }
