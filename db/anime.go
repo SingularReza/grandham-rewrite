@@ -9,7 +9,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// CreateAnimeEntry - creates an anime entry in ANIME table
+// CreateAnimeEntry - creates an anime entry in ANIME table bote: change this to return (int64, err)
 func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64 {
 	statement, err := database.Prepare(`INSERT INTO ANIME (anime_id, anime_title_romaji,
 										anime_title_english, anime_cover, anime_banner, anime_format,
