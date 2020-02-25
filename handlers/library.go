@@ -16,6 +16,8 @@ type LibraryRequest struct {
 	FolderIDs []string `json:"folderids,omitempty"`
 	Type      string   `json:"type,omitempty"`
 	Range     []int    `json:"range,omitempty"`
+	Items     []string `json:"items,omitempty"`
+	Id        int64    `json:"id,omitempty"`
 }
 
 // Item - generic structure for Items in a folder, conatins driveid and name
@@ -100,4 +102,18 @@ func AddFolder(folderID string, libraryID int64, itemList []Item) []Item {
 	db.AddFolder(folderID, libraryID)
 
 	return itemList
+}
+
+// GetLibraryItems - gets list of items in library
+func GetLibraryItems(w http.ResponseWriter, r *http.Request) {
+	library := LibraryRequest{}
+
+	err := json.NewDecoder(r.Body).Decode(&library)
+	if err != nil {
+		panic(err)
+	}
+
+	library.Items = db.GetLibraryItems(library.Id, library.Type, library.Range)
+
+	sendResponse(w, library)
 }

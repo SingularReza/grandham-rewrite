@@ -53,3 +53,8 @@ func AddFolder(folderString string, libraryID int64) int64 {
 
 	return folderID
 }
+
+// GetLibraryItems - gets list of items in library
+func GetLibraryItems(libraryID int64, libraryType string, itemRange []int) []string {
+	return []string{}
+}
