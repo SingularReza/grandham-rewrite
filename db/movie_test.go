@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/SingularReza/grandham-rewrite/metadata"
+	drive "google.golang.org/api/drive/v3"
 )
 
 func TestCreateMovieEntry(t *testing.T) {
@@ -22,7 +23,16 @@ func TestCreateMovieEntry(t *testing.T) {
 		PosterPath:       "/2jn4HTYdOAiErTVVNRYH2SNxxOd.jpg",
 	}
 
-	movieEntryID := CreateMovieEntry(movieData, "testid", 1)
+	fileData := &drive.File{
+		Size: 300,
+		VideoMediaMetadata: &drive.FileVideoMediaMetadata{
+			DurationMillis: 300,
+			Height:         300,
+			Width:          300,
+		},
+	}
+
+	movieEntryID := CreateMovieEntry(movieData, "testid", fileData, 1)
 
 	// Checking that the entry is successful | note: change this after making createmovieentry return (int64, err)
 	if reflect.TypeOf(movieEntryID).Name() == "int64" {

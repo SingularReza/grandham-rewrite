@@ -48,14 +48,15 @@ func sendResponse(w http.ResponseWriter, data interface{}) {
 
 func recordAnimeData(anime Item, libraryID int64) {
 	animeData := metadata.GetAnimeData(anime.Name)
-	//fmt.Printf("%+v\n", animeData, libraryID string)
 	animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID, libraryID)
 	fmt.Printf("%+v, %d\n", animeData, animeEntryID)
 }
 
 func recordMovieData(movie Item, libraryID int64) {
 	movieData := metadata.GetMovieData(movie.Name)
-	movieEntryID := db.CreateMovieEntry(movieData, movie.FolderID, libraryID)
+	movieFile := scan.FilterVideos(movie.FolderID)[0]
+	movieFileData := scan.GetVideoData(movieFile)
+	movieEntryID := db.CreateMovieEntry(movieData, movie.FolderID, movieFileData, libraryID)
 	fmt.Printf("%+v, %d\n", movieData, movieEntryID)
 }
 
