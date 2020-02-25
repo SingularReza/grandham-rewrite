@@ -9,10 +9,10 @@ import (
 )
 
 // CreateMovieEntry - creates an entry in table MOVIES
-func CreateMovieEntry(movieData metadata.MovieData, folderID string) int64 {
-	statement, err := database.Prepare(`INSERT INTO MOVIES (movie_id, movie_title, movie_original_title,
+func CreateMovieEntry(movieData metadata.MovieData, folderID string, libraryID int64) int64 {
+	statement, err := database.Prepare(`INSERT INTO MOVIES (movie_id, movie_folderid, movie_title, movie_original_title,
 										movie_language, release_date, movie_genres, movie_backdrop,
-										movie_poster) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+										movie_poster, library_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 	checkErr(err)
 
 	var genres, genreName string
@@ -27,10 +27,10 @@ func CreateMovieEntry(movieData metadata.MovieData, folderID string) int64 {
 		genres += genreName + ","
 	}
 	genres = strings.TrimLeft(genres, ",")
-	//fmt.Printf("movieid: %d\n", movieData.ID)
-	result, err := statement.Exec(movieData.ID, movieData.Title, movieData.OriginalTitle,
+
+	result, err := statement.Exec(movieData.ID, folderID, movieData.Title, movieData.OriginalTitle,
 		movieData.OriginalLanguage, movieData.ReleaseDate, genres,
-		movieData.BackdropPath, movieData.PosterPath)
+		movieData.BackdropPath, movieData.PosterPath, libraryID)
 	checkErr(err)
 
 	movieID, err := result.LastInsertId()

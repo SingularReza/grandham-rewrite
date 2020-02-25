@@ -25,7 +25,7 @@ func TestCreateAnimeEntry(t *testing.T) {
 		Genres:          []string{"Romance", "Drama", "Supernatural"},
 	}
 
-	animeEntryID := CreateAnimeEntry(animeData, "testid")
+	animeEntryID := CreateAnimeEntry(animeData, "testid", 1)
 
 	// Checking that the entry is successful | note: change this after making createanimeentry return (int64, err)
 	if reflect.TypeOf(animeEntryID).Name() == "int64" {

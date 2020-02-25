@@ -10,10 +10,11 @@ import (
 )
 
 // CreateAnimeEntry - creates an anime entry in ANIME table bote: change this to return (int64, err)
-func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64 {
-	statement, err := database.Prepare(`INSERT INTO ANIME (anime_id, anime_title_romaji,
+func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string, libraryID int64) int64 {
+	statement, err := database.Prepare(`INSERT INTO ANIME (anime_id, anime_folderid, anime_title_romaji,
 										anime_title_english, anime_cover, anime_banner, anime_format,
-										anime_episodes, anime_ep_duration, anime_genres) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+										anime_episodes, anime_ep_duration, anime_genres, library_id)
+										VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 	checkErr(err)
 
 	var genres string
@@ -22,9 +23,9 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string) int64
 	}
 	genres = strings.TrimLeft(genres, ",")
 
-	result, err := statement.Exec(animeData.ID, animeData.Title.Romaji, animeData.Title.English,
+	result, err := statement.Exec(animeData.ID, animeFolderID, animeData.Title.Romaji, animeData.Title.English,
 		filepath.Base(animeData.CoverImage.Large), filepath.Base(animeData.BannerImage), animeData.Format,
-		animeData.Episodes, animeData.EpisodeDuration, genres)
+		animeData.Episodes, animeData.EpisodeDuration, genres, libraryID)
 	fmt.Print(animeData.ID)
 	checkErr(err)
 

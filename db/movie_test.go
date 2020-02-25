@@ -22,7 +22,7 @@ func TestCreateMovieEntry(t *testing.T) {
 		PosterPath:       "/2jn4HTYdOAiErTVVNRYH2SNxxOd.jpg",
 	}
 
-	movieEntryID := CreateMovieEntry(movieData, "testid")
+	movieEntryID := CreateMovieEntry(movieData, "testid", 1)
 
 	// Checking that the entry is successful | note: change this after making createmovieentry return (int64, err)
 	if reflect.TypeOf(movieEntryID).Name() == "int64" {

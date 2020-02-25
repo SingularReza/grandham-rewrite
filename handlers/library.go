@@ -46,16 +46,16 @@ func sendResponse(w http.ResponseWriter, data interface{}) {
 	}
 }
 
-func recordAnimeData(anime Item) {
+func recordAnimeData(anime Item, libraryID int64) {
 	animeData := metadata.GetAnimeData(anime.Name)
-	fmt.Printf("%+v\n", animeData)
-	animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID)
+	//fmt.Printf("%+v\n", animeData, libraryID string)
+	animeEntryID := db.CreateAnimeEntry(animeData, anime.FolderID, libraryID)
 	fmt.Printf("%+v, %d\n", animeData, animeEntryID)
 }
 
-func recordMovieData(movie Item) {
+func recordMovieData(movie Item, libraryID int64) {
 	movieData := metadata.GetMovieData(movie.Name)
-	movieEntryID := db.CreateMovieEntry(movieData, movie.FolderID)
+	movieEntryID := db.CreateMovieEntry(movieData, movie.FolderID, libraryID)
 	fmt.Printf("%+v, %d\n", movieData, movieEntryID)
 }
 
@@ -78,11 +78,11 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 
 	if library.Type == "ANIME" {
 		for _, anime := range items {
-			go recordAnimeData(anime)
+			go recordAnimeData(anime, libraryID)
 		}
 	} else if library.Type == "MOVIE" {
 		for _, movie := range items {
-			go recordMovieData(movie)
+			go recordMovieData(movie, libraryID)
 		}
 	}
 
