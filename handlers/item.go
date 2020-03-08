@@ -5,14 +5,17 @@ import (
 	"net/http"
 
 	db "github.com/SingularReza/grandham-rewrite/db"
+	metadata "github.com/SingularReza/grandham-rewrite/metadata"
 )
 
-func getAnimeInfo(animeID int64) db.Anime {
+func getAnimeInfo(animeID int) metadata.AnimeMedia {
 	animeInfo := db.GetAnimeInfo(animeID)
+	return animeInfo
 }
 
-func getMovieInfo(movieID int64) db.Movie {
+func getMovieInfo(movieID int) metadata.MovieData {
 	movieInfo := db.GetMovieInfo(movieID)
+	return movieInfo
 }
 
 // GetItemInfo - retrieves all info about an item
@@ -20,7 +23,7 @@ func GetItemInfo(w http.ResponseWriter, r *http.Request) {
 	item := db.Item{}
 
 	err := json.NewDecoder(r.Body).Decode(&item)
-	checkErr(err)
+	checkErr(w, err)
 
 	switch item.Type {
 	case "ANIME":

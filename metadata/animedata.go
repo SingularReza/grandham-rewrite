@@ -44,6 +44,7 @@ type AnimeMedia struct {
 	Genres          []string   `json:"genres,omitempty"`
 	StartDate       AnimeDate  `json:"startDate,omitempty"`
 	EndDate         AnimeDate  `json:"endDate,omitempty"`
+	FolderID        string     `json:"folderid,omitempty"`
 }
 
 // AnimeDate - holds anime dates for start and end
@@ -62,17 +63,6 @@ type AnimeTitle struct {
 // AnimeImage - coverImage key value
 type AnimeImage struct {
 	Large string `json:"large,omitempty"`
-}
-
-// Anime - final anime data object
-type Anime struct {
-	Title        string
-	ReleaseDate  string
-	GenreIDs     []int
-	BackdropPath string
-	Overview     string
-	PosterPath   string
-	// created related struct
 }
 
 func checkErr(err error) {

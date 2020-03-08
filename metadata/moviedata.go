@@ -15,15 +15,22 @@ type MovieSearchResults struct {
 
 // MovieData - movie info
 type MovieData struct {
-	ID               int    `json:"id,omitempty"`
-	Title            string `json:"title,omitempty"`
-	OriginalTitle    string `json:"original_title,omitempty"`
-	OriginalLanguage string `json:"original_language,omitempty"`
-	ReleaseDate      string `json:"release_date,omitempty"`
-	GenreIDs         []int  `json:"genre_ids,omitempty"`
-	BackdropPath     string `json:"backdrop_path,omitempty"`
-	Overview         string `json:"overview,omitempty"`
-	PosterPath       string `json:"poster_path,omitempty"`
+	ID               int      `json:"id,omitempty"`
+	Title            string   `json:"title,omitempty"`
+	OriginalTitle    string   `json:"original_title,omitempty"`
+	OriginalLanguage string   `json:"original_language,omitempty"`
+	ReleaseDate      string   `json:"release_date,omitempty"`
+	GenreIDs         []int    `json:"genre_ids,omitempty"`
+	BackdropPath     string   `json:"backdrop_path,omitempty"`
+	Overview         string   `json:"overview,omitempty"`
+	PosterPath       string   `json:"poster_path,omitempty"`
+	Duration         int      `json:"duration,omitempty"`
+	FileSize         int      `json:"filesize,omitempty"`
+	Height           int      `json:"height,omitempty"`
+	Width            int      `json:"width,omitempty"`
+	FileID           string   `json:"fileid,omitempty"`
+	FolderID         string   `json:"folderid,omitempty"`
+	GenreNames       []string `json:"genre_names,omitempty"`
 }
 
 func getData(url string, target interface{}) error {
