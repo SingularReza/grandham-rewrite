@@ -9,16 +9,16 @@ import (
 
 // Library - generic structure for Library entry
 type Library struct {
-	ID   int
-	Name string
-	Type string
+	ID   int    `json:"id,omitempty"`
+	Name string `json:"name,omitempty"`
+	Type string `json:"type,omitempty"`
 }
 
 // Item - simplified generic structure for a library item when a list of items are requested
 type Item struct {
-	ID         int
-	Name       string
-	PosterPath string
+	ID         int    `json:"id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	PosterPath string `json:"posterpath,omitempty"`
 }
 
 func checkErr(err error) {
@@ -62,6 +62,8 @@ func AddFolder(folderString string, libraryID int64) int64 {
 }
 
 // GetLibraries - gets list of libraries
+//note : think of passing library pointer from handler and returning
+// it instead of creating a new struct solely for db
 func GetLibraries(itemRange []int) []Library {
 	query := `SELECT library_id, library_name, library_type FROM LIBRARIES
 			  LIMIT ? OFFSET ?`
