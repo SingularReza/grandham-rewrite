@@ -12,12 +12,12 @@ import (
 
 // LibraryRequest - generic request structure for any request related to library
 type LibraryRequest struct {
-	Name      string   `json:"name,omitempty"`
-	FolderIDs []string `json:"folderids,omitempty"`
-	Type      string   `json:"type,omitempty"`
-	Range     []int    `json:"range,omitempty"`
-	Items     []string `json:"items,omitempty"`
-	Id        int64    `json:"id,omitempty"`
+	Name      string    `json:"name,omitempty"`
+	FolderIDs []string  `json:"folderids,omitempty"`
+	Type      string    `json:"type,omitempty"`
+	Range     []int     `json:"range,omitempty"`
+	Items     []db.Item `json:"items,omitempty"`
+	ID        int64     `json:"id,omitempty"`
 }
 
 // Item - generic structure for Items in a folder, conatins driveid and name
@@ -34,18 +34,12 @@ func checkErr(w http.ResponseWriter, err error) {
 }
 
 func sendResponse(w http.ResponseWriter, data interface{}) {
-	data, ok := data.(LibraryRequest)
+	response, err := json.Marshal(data)
+	checkErr(w, err)
 
-	if ok {
-		response, err := json.Marshal(data)
-		checkErr(w, err)
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(response)
-	} else {
-		fmt.Println("data is null")
-	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }
 
 func recordAnimeData(anime Item, libraryID int64) {
@@ -104,6 +98,20 @@ func AddFolder(folderID string, libraryID int64, itemList []Item) []Item {
 	return itemList
 }
 
+// GetLibraryList - gets list of libraries
+func GetLibraryList(w http.ResponseWriter, r *http.Request) {
+	request := LibraryRequest{}
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		panic(err)
+	}
+
+	libraries := db.GetLibraries(request.Range)
+
+	sendResponse(w, libraries)
+}
+
 // GetLibraryItems - gets list of items in library
 func GetLibraryItems(w http.ResponseWriter, r *http.Request) {
 	library := LibraryRequest{}
@@ -113,7 +121,7 @@ func GetLibraryItems(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	library.Items = db.GetLibraryItems(library.Id, library.Type, library.Range)
+	library.Items = db.GetLibraryItems(library.ID, library.Type, library.Range)
 
 	sendResponse(w, library)
 }

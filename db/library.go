@@ -14,6 +14,13 @@ type Library struct {
 	Type string
 }
 
+// Item - simplified generic structure for a library item when a list of items are requested
+type Item struct {
+	ID         int
+	Name       string
+	PosterPath string
+}
+
 func checkErr(err error) {
 	if err != nil {
 		panic(err)
@@ -54,7 +61,53 @@ func AddFolder(folderString string, libraryID int64) int64 {
 	return folderID
 }
 
-// GetLibraryItems - gets list of items in library
-func GetLibraryItems(libraryID int64, libraryType string, itemRange []int) []string {
-	return []string{}
+// GetLibraries - gets list of libraries
+func GetLibraries(itemRange []int) []Library {
+	query := `SELECT library_id, library_name, library_type FROM LIBRARIES
+			  LIMIT ? OFFSET ?`
+	rows, err := database.Query(query, itemRange[0], itemRange[1])
+	checkErr(err)
+	defer rows.Close()
+
+	data := []Library{}
+
+	for rows.Next() {
+		var row Library
+		err = rows.Scan(&row.ID, &row.Name, &row.Type)
+		checkErr(err)
+
+		data = append(data, row)
+	}
+
+	return data
+}
+
+// GetLibraryItems - gets list of items in the given library
+func GetLibraryItems(libraryID int64, libraryType string, itemRange []int) []Item {
+	var query string
+
+	switch libraryType {
+	case "ANIME":
+		query = `SELECT anime_id, anime_title_romaji, anime_cover FROM ANIME
+				 WHERE library_id = ? LIMIT ? OFFSET ?`
+	case "MOVIES":
+		query = `SELECT movie_id, movie_title, movie_poster FROM MOVIES
+				 WHERE library_id = ? LIMIT ? OFFSET ?`
+	}
+
+	rows, err := database.Query(query, libraryID, itemRange[0], itemRange[1])
+	checkErr(err)
+	defer rows.Close()
+
+	data := []Item{}
+
+	for rows.Next() {
+		var row Item
+		err = rows.Scan(&row.ID, &row.Name, &row.PosterPath)
+		checkErr(err)
+
+		data = append(data, row)
+	}
+
+	return data
 }

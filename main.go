@@ -12,25 +12,25 @@ import (
 )
 
 type spaHandler struct {
-    staticPath string
-    indexPath string
+	staticPath string
+	indexPath  string
 }
 
 // export this to handlers and import here
 func (h spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    path, err := filepath.Abs(r.URL.Path)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
+	path, err := filepath.Abs(r.URL.Path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-    path = filepath.Join(h.staticPath, path)
+	path = filepath.Join(h.staticPath, path)
 
-    _, err = os.Stat(path)
-    if os.IsNotExist(err) {
-        http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
-        return
-    } else if err != nil {
+	_, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		http.ServeFile(w, r, filepath.Join(h.staticPath, h.indexPath))
+		return
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -43,13 +43,15 @@ func main() {
 
 	library := router.PathPrefix("/library").Subrouter()
 	library.HandleFunc("/create", handler.CreateLibrary)
+	library.HandleFunc("/list", handler.GetLibraryList)
+	library.HandleFunc("/items", handler.GetLibraryItems)
 
 	spa := spaHandler{staticPath: "dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
 
 	srv := &http.Server{
-		Handler: router,
-		Addr:    "127.0.0.1:8000",
+		Handler:      router,
+		Addr:         "127.0.0.1:8000",
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
 	}
