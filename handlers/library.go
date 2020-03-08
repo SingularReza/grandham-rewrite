@@ -22,8 +22,8 @@ type LibraryRequest struct {
 
 // Item - generic structure for Items in a folder, conatins driveid and name
 type Item struct {
-	Name     string
-	FolderID string
+	Name     string `json:"name,omitempty"`
+	FolderID string `json:"folderid,omitempty"`
 }
 
 func checkErr(w http.ResponseWriter, err error) {

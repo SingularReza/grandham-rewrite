@@ -46,6 +46,9 @@ func main() {
 	library.HandleFunc("/list", handler.GetLibraryList)
 	library.HandleFunc("/items", handler.GetLibraryItems)
 
+	item := router.PathPrefix("/item").Subrouter()
+	item.HandleFunc("/info", handler.GetItemInfo)
+
 	spa := spaHandler{staticPath: "dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
 
