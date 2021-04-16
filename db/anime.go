@@ -7,6 +7,7 @@ import (
 
 	metadata "github.com/SingularReza/grandham-rewrite/metadata"
 	_ "github.com/mattn/go-sqlite3"
+	"google.golang.org/api/drive/v3"
 )
 
 // CreateAnimeEntry - creates an anime entry in ANIME table bote: change this to return (int64, err)
@@ -34,7 +35,6 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string, libra
 	checkErr(err)
 
 	infoID := addAnimeExtraInfo(animeData.Description, animeData.StartDate, animeData.EndDate, animeID)
-
 	fmt.Printf("animeid: %d, animeinfoid: %d\n", animeID, infoID)
 
 	return animeID
@@ -48,6 +48,25 @@ func addAnimeExtraInfo(description string, startDate metadata.AnimeDate, endDate
 
 	result, err := statement.Exec(description, startDate.Year, startDate.Month, startDate.Day,
 		endDate.Year, endDate.Month, endDate.Day, animeID)
+	checkErr(err)
+
+	infoID, err := result.LastInsertId()
+	checkErr(err)
+
+	fmt.Println(infoID)
+
+	return infoID
+}
+
+// AddAnimeEpisodes - Reads video file metadata and records them
+func AddAnimeEpisode(animeID int64, fileData *drive.File) int64 {
+	statement, err := database.Prepare(`INSERT OR IGNORE INTO ANIMEEPISODES (ep_id, ep_title,
+		ep_duration, ep_size, ep_height, ep_width, anime_id)
+		VALUES (?, ?, ?, ?, ?, ?, ?)`)
+	checkErr(err)
+	videoMetadata := fileData.VideoMediaMetadata
+	result, err := statement.Exec(fileData.Id, fileData.Name, videoMetadata.DurationMillis,
+		fileData.Size, videoMetadata.Height, videoMetadata.Width, animeID)
 	checkErr(err)
 
 	infoID, err := result.LastInsertId()
@@ -79,6 +98,19 @@ func GetAnimeInfo(animeID int) metadata.AnimeMedia {
 	checkErr(err)
 
 	animeData.Genres = strings.Split(genreString, ",")
+
+	episodeList := []metadata.AnimeEpisode{}
+	rows, err := database.Query(`SELECT ep_id, ep_title,
+			ep_duration, ep_size, ep_height, ep_width FROM ANIMEEPISODES
+			WHERE anime_id = ?`, animeData.ID)
+	for rows.Next() {
+		episode := metadata.AnimeEpisode{}
+		rows.Scan(&episode.FileID, &episode.FileName, &episode.FileDuration, &episode.FileSize,
+			&episode.FileHeight, &episode.FileWidth)
+		episodeList = append(episodeList, episode)
+	}
+
+	animeData.EpisodeList = episodeList
 
 	return animeData
 }

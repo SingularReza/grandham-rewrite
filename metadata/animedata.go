@@ -31,20 +31,21 @@ type AnimeData struct {
 
 // AnimeMedia - Media key value
 type AnimeMedia struct {
-	ID              int        `json:"id,omitempty"`
-	Title           AnimeTitle `json:"title,omitempty"`
-	CoverImage      AnimeImage `json:"coverImage,omitempty"`
-	BannerImage     string     `json:"bannerImage,omitempty"`
-	Description     string     `json:"description,omitempty"`
-	Season          string     `json:"season,omitempty"`
-	SeasonYear      int        `json:"seasonYear,omitempty"`
-	Format          string     `json:"format,omitempty"`
-	Episodes        int        `json:"episodes,omitempty"`
-	EpisodeDuration int        `json:"duration,omitempty"`
-	Genres          []string   `json:"genres,omitempty"`
-	StartDate       AnimeDate  `json:"startDate,omitempty"`
-	EndDate         AnimeDate  `json:"endDate,omitempty"`
-	FolderID        string     `json:"folderid,omitempty"`
+	ID              int            `json:"id,omitempty"`
+	Title           AnimeTitle     `json:"title,omitempty"`
+	CoverImage      AnimeImage     `json:"coverImage,omitempty"`
+	BannerImage     string         `json:"bannerImage,omitempty"`
+	Description     string         `json:"description,omitempty"`
+	Season          string         `json:"season,omitempty"`
+	SeasonYear      int            `json:"seasonYear,omitempty"`
+	Format          string         `json:"format,omitempty"`
+	Episodes        int            `json:"episodes,omitempty"`
+	EpisodeDuration int            `json:"duration,omitempty"`
+	Genres          []string       `json:"genres,omitempty"`
+	StartDate       AnimeDate      `json:"startDate,omitempty"`
+	EndDate         AnimeDate      `json:"endDate,omitempty"`
+	FolderID        string         `json:"folderid,omitempty"`
+	EpisodeList     []AnimeEpisode `json:"episodelist,omitempty"`
 }
 
 // AnimeDate - holds anime dates for start and end
@@ -63,6 +64,15 @@ type AnimeTitle struct {
 // AnimeImage - coverImage key value
 type AnimeImage struct {
 	Large string `json:"large,omitempty"`
+}
+
+type AnimeEpisode struct {
+	FileID       string `json:"fileid,omitempty"`
+	FileName     string `json:"filename,omitempty"`
+	FileDuration int    `json:"fileduration,omitempty"`
+	FileSize     int    `json:"filesize,omitempty"`
+	FileHeight   int    `json:"fileheight,omitempty"`
+	FileWidth    int    `json:"filewidth,omitempty"`
 }
 
 func checkErr(err error) {
