@@ -83,6 +83,8 @@ func CreateLibrary(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	library.ID = libraryID
+
 	sendResponse(w, library)
 }
 

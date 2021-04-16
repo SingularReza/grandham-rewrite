@@ -12,11 +12,10 @@ import (
 // CreateAnimeEntry - creates an anime entry in ANIME table bote: change this to return (int64, err)
 // note: get library_id and anime_id relation into a different table(different libraries may have same anime)
 func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string, libraryID int64) int64 {
-	statement, err := database.Prepare(`INSERT INTO ANIME (anime_id, anime_folderid, anime_title_romaji,
+	statement, err := database.Prepare(`INSERT OR IGNORE INTO ANIME (anime_id, anime_folderid, anime_title_romaji,
 										anime_title_english, anime_cover, anime_banner, anime_format,
 										anime_episodes, anime_ep_duration, anime_genres, library_id)
-										VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) WHERE NOT EXISTS
-										(SELECT anime_id FROM ANIME WHERE anime_id = ?)`)
+										VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 	checkErr(err)
 
 	var genres string
@@ -27,7 +26,7 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string, libra
 
 	result, err := statement.Exec(animeData.ID, animeFolderID, animeData.Title.Romaji, animeData.Title.English,
 		filepath.Base(animeData.CoverImage.Large), filepath.Base(animeData.BannerImage), animeData.Format,
-		animeData.Episodes, animeData.EpisodeDuration, genres, libraryID, animeData.ID)
+		animeData.Episodes, animeData.EpisodeDuration, genres, libraryID)
 	fmt.Print(animeData.ID)
 	checkErr(err)
 
@@ -42,7 +41,7 @@ func CreateAnimeEntry(animeData metadata.AnimeMedia, animeFolderID string, libra
 }
 
 func addAnimeExtraInfo(description string, startDate metadata.AnimeDate, endDate metadata.AnimeDate, animeID int64) int64 {
-	statement, err := database.Prepare(`INSERT INTO ANIMEINFO (anime_desc, anime_startyear, anime_startmonth,
+	statement, err := database.Prepare(`INSERT OR IGNORE INTO ANIMEINFO (anime_desc, anime_startyear, anime_startmonth,
 										anime_startday, anime_endyear, anime_endmonth, anime_endday, anime_id)
 										VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
 	checkErr(err)
