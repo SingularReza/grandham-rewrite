@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
 
 	db "github.com/SingularReza/grandham-rewrite/db"
 	scan "github.com/SingularReza/grandham-rewrite/gdrive"
@@ -62,11 +63,14 @@ func recordMovieData(movie Item, libraryID int64) {
 
 // CreateLibrary - Creates Library entry after scanning the relevant folder
 func CreateLibrary(w http.ResponseWriter, r *http.Request) {
+	//(w).Header().Set("Access-Control-Allow-Origin", "*")
+
 	library := LibraryRequest{}
 
+	//fmt.Printf("%+v", r.Body)
 	err := json.NewDecoder(r.Body).Decode(&library)
 	if err != nil {
-		panic(err)
+		checkErr(w, err)
 	}
 
 	libraryID := db.CreateLibrary(library.Name, library.Type)
@@ -108,9 +112,14 @@ func AddFolder(folderID string, libraryID int64, itemList []Item) []Item {
 func GetLibraryList(w http.ResponseWriter, r *http.Request) {
 	request := LibraryRequest{}
 
-	err := json.NewDecoder(r.Body).Decode(&request)
+	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+	}
+	fmt.Println(string(requestDump))
+	err = json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		checkErr(w, err)
 	}
 
 	libraries := db.GetLibraries(request.Range)

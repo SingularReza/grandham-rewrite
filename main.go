@@ -9,6 +9,7 @@ import (
 
 	handler "github.com/SingularReza/grandham-rewrite/handlers"
 	mux "github.com/gorilla/mux"
+	cors "github.com/rs/cors"
 )
 
 type spaHandler struct {
@@ -49,11 +50,19 @@ func main() {
 	item := router.PathPrefix("/item").Subrouter()
 	item.HandleFunc("/info", handler.GetItemInfo)
 
+	image := router.PathPrefix("/image/")
+	image.Handler(http.StripPrefix("/image/", http.FileServer(http.Dir("./images/"))))
+
 	spa := spaHandler{staticPath: "dist", indexPath: "index.html"}
 	router.PathPrefix("/").Handler(spa)
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8080"},
+		AllowCredentials: true,
+	})
+
 	srv := &http.Server{
-		Handler:      router,
+		Handler:      c.Handler(router),
 		Addr:         "127.0.0.1:8000",
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,

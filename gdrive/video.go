@@ -41,3 +41,17 @@ func GetVideoData(videoID string) *drive.File {
 
 	return fileData
 }
+
+// StreamVideo - creates and handsover a bitstream for the multimedia
+func StreamVideo(videoID string) *drive.File {
+	srv := getService()
+	fileData, err := srv.Files.Get(videoID).
+		SupportsAllDrives(true).
+		Fields("id, name, fileExtension, size, videoMediaMetadata").
+		Do()
+	if err != nil {
+		log.Fatalf("Unable to retrieve files: %v", err)
+	}
+
+	return fileData
+}
