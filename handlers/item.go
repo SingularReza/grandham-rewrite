@@ -2,7 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"net/http/httputil"
 
 	db "github.com/SingularReza/grandham-rewrite/db"
 	metadata "github.com/SingularReza/grandham-rewrite/metadata"
@@ -22,7 +24,13 @@ func getMovieInfo(movieID int) metadata.MovieData {
 func GetItemInfo(w http.ResponseWriter, r *http.Request) {
 	item := db.Item{}
 
-	err := json.NewDecoder(r.Body).Decode(&item)
+	requestDump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(requestDump))
+
+	err = json.NewDecoder(r.Body).Decode(&item)
 	checkErr(w, err)
 
 	switch item.Type {

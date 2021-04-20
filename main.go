@@ -50,6 +50,9 @@ func main() {
 	item := router.PathPrefix("/item").Subrouter()
 	item.HandleFunc("/info", handler.GetItemInfo)
 
+	creds := router.PathPrefix("/creds").Subrouter()
+	creds.HandleFunc("/token", handler.GetCredentials)
+
 	image := router.PathPrefix("/image/")
 	image.Handler(http.StripPrefix("/image/", http.FileServer(http.Dir("./images/"))))
 

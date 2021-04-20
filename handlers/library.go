@@ -131,7 +131,13 @@ func GetLibraryList(w http.ResponseWriter, r *http.Request) {
 func GetLibraryItems(w http.ResponseWriter, r *http.Request) {
 	library := LibraryRequest{}
 
-	err := json.NewDecoder(r.Body).Decode(&library)
+	requestDump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(requestDump))
+
+	err = json.NewDecoder(r.Body).Decode(&library)
 	if err != nil {
 		panic(err)
 	}
@@ -139,4 +145,10 @@ func GetLibraryItems(w http.ResponseWriter, r *http.Request) {
 	library.Items = db.GetLibraryItems(library.ID, library.Type, library.Range)
 
 	sendResponse(w, library)
+}
+
+// GetCredentials - returns the access_token for GDrive to front-end
+func GetCredentials(w http.ResponseWriter, r *http.Request) {
+	token := scan.AccessTokenFromFile()
+	w.Write([]byte(token))
 }
